@@ -1,0 +1,102 @@
+{
+  "name": "demo",
+  "author": "zhongming",
+  "version": "0.1.0",
+  "main": "./electron/main.js",
+  "description": "测试",
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "electron": "set NODE_ENV=dev&&electron .",
+    "package": "electron-builder --windows nsis:ia32",
+    "lint": "vue-cli-service lint"
+  },
+  "dependencies": {
+    "core-js": "^3.8.3",
+    "vue": "^3.2.6"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.16",
+    "@babel/eslint-parser": "^7.12.16",
+    "@vue/cli-plugin-babel": "~5.0.0-beta.4",
+    "@vue/cli-plugin-eslint": "~5.0.0-beta.4",
+    "@vue/cli-service": "~5.0.0-beta.4",
+    "@vue/compiler-sfc": "^3.2.6",
+    "electron": "^14.0.1",
+    "electron-builder": "^22.11.7",
+    "eslint": "^7.20.0",
+    "eslint-plugin-vue": "^7.2.0",
+    "node-sass": "^6.0.1",
+    "sass-loader": "^12.1.0",
+    "style-loader": "^3.2.1"
+  },
+  "build": {
+    "appId": "xxxx",
+    "productName": "demo",
+    "copyright": "Copyright @ year ${author}",
+    "compression": "store",
+    "directories": {
+      "output": "build"
+    },
+    "asar": false,
+    "files": [
+      {
+        "from": "./dist",
+        "to": "./"
+      },
+      {
+        "from": "./electron",
+        "to": "./electron"
+      },
+      "package.json"
+    ],
+    "win": {
+      "icon": "./electron/icon.ico",
+      "artifactName": "${productName}_${version}.${ext}",
+      "requestedExecutionLevel": "highestAvailable",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "ia32"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "guid": "xxxx",
+      "perMachine": true,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true,
+      "installerIcon": "./electron/icon.ico",
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "demo"
+    }
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/vue3-essential",
+      "eslint:recommended"
+    ],
+    "parserOptions": {
+      "parser": "@babel/eslint-parser"
+    },
+    "rules": {
+      "no-constant-condition": 0
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead",
+    "not ie 11"
+  ],
+  "_id": "demo@0.1.0",
+  "readme": "ERROR: No README data found!"
+}

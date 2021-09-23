@@ -1,0 +1,21 @@
+
+.icon-header {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background-size: 100%;
+    background-repeat: no-repeat;
+    cursor: pointer;
+}
+.icon-close {
+    background-image: url(../icon/guanbixi.svg);
+}
+.icon-restore {
+    background-image: url(../icon/huifuxi.svg);
+}
+.icon-minimize  {
+    background-image: url(../icon/zuixiaohuaxi.svg);
+}
+.icon-maximize  {
+    background-image: url(../icon/zuidahuaxi.svg);
+}
