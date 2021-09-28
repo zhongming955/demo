@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-09-17 10:41:52
- * @LastEditTime: 2021-09-23 10:56:25
+ * @LastEditTime: 2021-09-28 11:49:46
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \electron-vue\demo\src\App.vue
@@ -14,13 +14,16 @@
 <script>
 import TitleBar from './components/TitleBar.vue'
 import HelloWorld from './components/HelloWorld.vue'
-
 export default {
   name: 'App',
   components: {
     HelloWorld,
     TitleBar
+  },
+  mounted(){
+
   }
+
 }
 </script>
 

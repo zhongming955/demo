@@ -1,14 +1,15 @@
 <!--
  * @Author: your name
  * @Date: 2021-09-18 11:16:14
- * @LastEditTime: 2021-09-23 11:32:09
+ * @LastEditTime: 2021-09-28 11:41:23
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \electron-vue\demo\src\components\HeadBar.vue
 -->
 <template>
-  <div class="head-bar drag">
-        自定义title栏
+  <div :ref="el => refDiv = el"  class="head-bar drag">
+      <img src='../assets/logo.png'/>
+        青鸾客户端
         <span class="no-drag">
           <i @click='setWinStatus("minimize")' class="icon-header icon-minimize"></i>
           <i @click='setWinStatus(isMax?"unmaximize":"maximize")' :class="['icon-header',isMax ? 'icon-restore' : 'icon-maximize']"></i>
@@ -29,11 +30,11 @@ const {ipcRenderer} = window.require('electron')
 export default {
     setup() {
         const isMax = ref(false)
+        const refDiv = ref(null)
         onMounted(() => {
             console.log('mounted')
             // 监听主进程发的消息，
             ipcRenderer.on('isMaximize',(e,payload) => {
-                console.log(payload)
                 isMax.value = payload
             })
         })
@@ -45,7 +46,7 @@ export default {
             ipcRenderer.send('setWinStatus', msg)
         }
         return {
-            isMax, setWinStatus
+            isMax, setWinStatus,refDiv
         }
     }
 }
@@ -57,7 +58,10 @@ export default {
     display: flex;
     align-items: center;
     background-color: #EEE;
-    padding-left: 20px;
+    img {
+        width: 35px;
+        margin: 5px;
+    }
     span {
         margin: 0 10px 0 auto;
         i {

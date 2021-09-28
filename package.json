@@ -32,7 +32,7 @@
   },
   "build": {
     "appId": "xxxx",
-    "productName": "demo",
+    "productName": "青鸾",
     "copyright": "Copyright @ year ${author}",
     "compression": "store",
     "directories": {
@@ -88,7 +88,9 @@
       "parser": "@babel/eslint-parser"
     },
     "rules": {
-      "no-constant-condition": 0
+      "no-constant-condition": 0,
+      "no-debugger":0,
+      "no-unused-vars":0
     }
   },
   "browserslist": [

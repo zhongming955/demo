@@ -1,0 +1,14 @@
+.header-container,
+.login-container{
+    -webkit-app-region: drag;
+}
+.header-leftspace,
+.header-rightspace,
+.header-tab,
+.login-container .right-form .fks-form,
+.login-container .right-form .login-button{
+    -webkit-app-region: no-drag;
+}
+::-webkit-scrollbar {
+    width: 5px !important;
+}
