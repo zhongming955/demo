@@ -2,7 +2,7 @@
 /*
  * @Author: your name
  * @Date: 2021-09-17 11:17:12
- * @LastEditTime: 2021-09-28 15:24:16
+ * @LastEditTime: 2021-10-09 14:13:05
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \electron-vue\demo\main.js
@@ -56,6 +56,7 @@ function createWindow() {
     
     if(process.env.NODE_ENV === 'dev') {
        mainWin.loadURL('http://localhost:8080') //项目启动地址
+       mainWin.webContents.openDevTools()
     } else {
         mainWin.loadFile(path.join(__dirname, '../index.html'))
     }
@@ -70,7 +71,7 @@ function createWindow() {
 
     setWindowOpenHandler(mainWin.webContents)
     watchSize()
-    createView()
+   // createView()
 } 
 function createView(){
     let [width, height] = mainWin.getSize()

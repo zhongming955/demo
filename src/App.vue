@@ -1,27 +1,29 @@
 <!--
  * @Author: your name
  * @Date: 2021-09-17 10:41:52
- * @LastEditTime: 2021-09-28 11:49:46
+ * @LastEditTime: 2021-10-09 15:58:51
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \electron-vue\demo\src\App.vue
 -->
 <template>
   <TitleBar></TitleBar>
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <file-tree ></file-tree>
+
 </template>
 
 <script>
 import TitleBar from './components/TitleBar.vue'
-import HelloWorld from './components/HelloWorld.vue'
+import FileTree from './components/FileTree.vue'
 export default {
   name: 'App',
   components: {
-    HelloWorld,
-    TitleBar
+    TitleBar,
+    FileTree,
   },
   mounted(){
-
+  },
+  setup() {
   }
 
 }
@@ -35,5 +37,10 @@ export default {
   text-align: center;
   color: #2c3e50;
   background: #FFF;
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+  overflow: hidden;
 }
+
 </style>
