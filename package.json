@@ -1,5 +1,5 @@
 {
-  "name": "demo",
+  "name": "treeZip",
   "author": "zhongming",
   "version": "0.1.0",
   "main": "./electron/main.js",
@@ -13,9 +13,9 @@
   },
   "dependencies": {
     "@element-plus/icons": "0.0.11",
+    "archiver": "^5.3.0",
     "core-js": "^3.8.3",
     "element-plus": "^1.1.0-beta.19",
-    "jszip": "^3.7.1",
     "vue": "^3.2.6"
   },
   "devDependencies": {
@@ -35,7 +35,7 @@
   },
   "build": {
     "appId": "xxxx",
-    "productName": "青鸾",
+    "productName": "目录树打包",
     "copyright": "Copyright @ year ${author}",
     "compression": "store",
     "directories": {
@@ -73,10 +73,10 @@
       "allowElevation": true,
       "allowToChangeInstallationDirectory": true,
       "installerIcon": "./electron/icon.ico",
-      "createDesktopShortcut": true,
-      "createStartMenuShortcut": true,
+      "createDesktopShortcut": false,
+      "createStartMenuShortcut": false,
       "include": "./electron/installer.nsh",
-      "shortcutName": "demo"
+      "shortcutName": "目录树打包"
     }
   },
   "eslintConfig": {
