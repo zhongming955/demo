@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-10-09 13:52:35
- * @LastEditTime: 2021-10-11 17:05:33
+ * @LastEditTime: 2021-10-12 15:55:46
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \electron-vue\demo\src\components\FileTree.vue
@@ -14,7 +14,6 @@
     element-loading-background="rgba(0, 0, 0, 0.8)"
   >
     <el-tree
-      :data="data"
       :props="props"
       :ref="(ref) => (tree = ref)"
       show-checkbox
@@ -43,7 +42,7 @@
 <script>
 import { ElTree, ElIcon, ElButton, ElMessage} from "element-plus";
 import { Files, Folder } from "@element-plus/icons";
-import { reactive, ref, toRaw } from "vue";
+import { inject, ref, toRaw, watch} from "vue";
 import zipTree from "../utils/zipTree";
 const fs = window.require("fs/promises");
 const { ipcRenderer } = window.require("electron");
@@ -61,35 +60,51 @@ export default {
     };
   },
   setup() {
-    let dirPath = JSON.parse(ipcRenderer.sendSync("getZipInfo")).path;
+    const dirPath = inject('dirPath')
+
     const zipping = ref(false);
-    const data = reactive([]);
     const tree = ref(0);
     // 读取文件树
-    const loadFiles = async (node, resole) => {
-      let cData = [];
-      let cPath = node?.data?.path ? node.data.path : dirPath;
-      const dir = await fs.opendir(cPath);
-      // 将文件列表转为树形格式
-      for await (const dirent of dir) {
-        cData.push({
-          name: dirent.name,
-          path: path.join(cPath, dirent.name),
-          isLeaf: dirent.isFile(),
-          isFile: dirent.isFile(),
-        });
-      }
-      resole(cData);
+    const getTreeData = async(cPath) => {
+        try {
+          const dir =  await fs.opendir(cPath);
+          const cData = [];
+          // 将文件列表转为树形格式
+          for await (const dirent of dir) {
+            cData.push({
+              name: dirent.name,
+              path: path.join(cPath, dirent.name),
+              isLeaf: dirent.isFile(),
+              isFile: dirent.isFile(),
+            });
+          }
+          return cData
+        } catch (error) {
+          ElMessage({message:'获取目录失败',type:'error'})
+          return ([])
+        }
+    }
+    // tree load 方法
+    const loadFiles = async(node, resolve) => {
+      console.log(tree.value)
+      let cPath = node?.data?.path ? node.data.path : dirPath.value;
+      let cData = await getTreeData(cPath)
+      resolve(cData) 
     };
+    watch( dirPath,async()=>{
+      console.log(dirPath)
+      const data = await getTreeData(dirPath.value)
+      tree.value.root.setData(data)
+    })
     // 压缩指令
     const zip = () => {
       zipping.value = true;
       const fileList = toRaw(tree.value.getCheckedNodes());
-      zipTree(fileList, dirPath)
+      zipTree(fileList, dirPath.value)
         .then(() => {
           ElMessage({ message: "打包成功！", type: "success" });
           zipping.value = false
-          ipcRenderer.send('openDir',dirPath)
+          ipcRenderer.send('openDir',dirPath.value)
           setTimeout(()=>{
             ipcRenderer.send('closeApp')
           },1000)
@@ -102,7 +117,7 @@ export default {
           });
         });
     };
-    return { data, loadFiles, zip, tree, zipping };
+    return {  loadFiles, zip, tree, zipping };
   },
 };
 </script>

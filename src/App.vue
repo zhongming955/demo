@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-09-17 10:41:52
- * @LastEditTime: 2021-10-09 15:58:51
+ * @LastEditTime: 2021-10-12 09:36:55
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \electron-vue\demo\src\App.vue
@@ -15,6 +15,9 @@
 <script>
 import TitleBar from './components/TitleBar.vue'
 import FileTree from './components/FileTree.vue'
+import { provide, ref } from "vue";
+
+const { ipcRenderer } = window.require("electron");
 export default {
   name: 'App',
   components: {
@@ -24,6 +27,14 @@ export default {
   mounted(){
   },
   setup() {
+    const dirPath = ref('')
+    dirPath.value = JSON.parse(ipcRenderer.sendSync("getZipInfo")).path
+    const setDirPath = (path) => {
+      dirPath.value = path
+    }
+    provide('dirPath',dirPath)
+    provide('setDirPath',setDirPath)
+
   }
 
 }

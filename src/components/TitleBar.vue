@@ -1,16 +1,19 @@
 <!--
  * @Author: your name
  * @Date: 2021-09-18 11:16:14
- * @LastEditTime: 2021-10-11 16:43:12
+ * @LastEditTime: 2021-10-12 15:50:52
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \electron-vue\demo\src\components\HeadBar.vue
 -->
 <template>
-  <div :ref="el => refDiv = el"  class="head-bar drag">
+  <div  class="head-bar drag">
       <img src='../assets/logo.png'/>
-        打包目录：{{dirPath}}
-        <span class="no-drag">
+        打包目录：
+        <el-breadcrumb separator='/' class="no-drag">
+            <el-breadcrumb-item  v-for="(item, index) in dirPathArray" :key="item" @click="jumpTo(index)">{{item}}</el-breadcrumb-item>
+        </el-breadcrumb>
+        <span class="no-drag" >
           <i @click='setWinStatus("minimize")' class="icon-header icon-minimize"></i>
           <i @click='setWinStatus(isMax?"unmaximize":"maximize")' :class="['icon-header',isMax ? 'icon-restore' : 'icon-maximize']"></i>
           <i @click='setWinStatus("close")' class="icon-header icon-close"></i>
@@ -19,7 +22,9 @@
 </template>
 
 <script>
-import {ref, onMounted, onUnmounted } from 'vue'
+import {ref, onMounted, onUnmounted, computed} from 'vue'
+import {ElBreadcrumb, ElBreadcrumbItem} from 'element-plus'
+import {inject} from 'vue'
 /*
  * 直接使用require会报错，因为vue在构建项目时不会区分这是node语句而忽略，所以会报错
  * 使用window.requeire来防止构建时处理
@@ -28,11 +33,16 @@ import {ref, onMounted, onUnmounted } from 'vue'
  */
 const {ipcRenderer} = window.require('electron')
 export default {
+    components:{ElBreadcrumbItem,ElBreadcrumb},
     setup() {
         const isMax = ref(false)
-        const refDiv = ref(null)
-        const dirPath = ref('')
-        dirPath.value = JSON.parse(ipcRenderer.sendSync("getZipInfo")).path;
+        const dirPath = inject('dirPath')
+        const dirPathArray = computed(()=>{
+            return dirPath.value.split('\\')
+        }) 
+        const jumpTo = (index)=> {
+            dirPath.value = dirPathArray.value.slice(0,index+1).join('\\') +'\\'
+        }
         onMounted(() => {
             console.log('mounted')
             // 监听主进程发的消息，
@@ -48,7 +58,7 @@ export default {
             ipcRenderer.send('setWinStatus', msg)
         }
         return {
-            isMax, setWinStatus,refDiv,dirPath
+            isMax, setWinStatus,dirPathArray,jumpTo
         }
     }
 }
@@ -64,11 +74,20 @@ export default {
         width: 35px;
         margin: 5px;
     }
-    span {
+    > span {
         margin: 0 10px 0 auto;
         i {
             margin: 0 5px;
         }
+    }
+    /deep/ .el-breadcrumb__inner {
+        cursor: pointer;
+        &:hover {
+            color: #409eff;
+        }
+    }
+    /deep/ .el-breadcrumb__separator {
+        margin:0 3px
     }
 }
 </style>
