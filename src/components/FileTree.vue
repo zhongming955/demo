@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-10-09 13:52:35
- * @LastEditTime: 2021-10-12 15:55:46
+ * @LastEditTime: 2021-10-12 16:21:13
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \electron-vue\demo\src\components\FileTree.vue
@@ -109,7 +109,7 @@ export default {
             ipcRenderer.send('closeApp')
           },1000)
         })
-        .catch((err) => {
+        .catch(() => {
           zipping.value = false;
           ElMessage({
             message: "打包失败",
