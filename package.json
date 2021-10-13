@@ -1,9 +1,9 @@
 {
   "name": "treeZip",
   "author": "zhongming",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "main": "./electron/main.js",
-  "description": "测试",
+  "description": "选择文件目录下的文件或者文件夹，按当前结构进行打包",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
@@ -35,13 +35,13 @@
   },
   "build": {
     "appId": "xxxx",
-    "productName": "目录树打包",
+    "productName": "treeZip",
     "copyright": "Copyright @ year ${author}",
     "compression": "store",
     "directories": {
       "output": "build"
     },
-    "asar": false,
+    "asar": true,
     "files": [
       {
         "from": "./dist",
@@ -76,7 +76,7 @@
       "createDesktopShortcut": false,
       "createStartMenuShortcut": false,
       "include": "./electron/installer.nsh",
-      "shortcutName": "目录树打包"
+      "shortcutName": "treeZip"
     }
   },
   "eslintConfig": {
