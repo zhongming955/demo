@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-10-09 13:52:35
- * @LastEditTime: 2021-10-12 16:21:13
+ * @LastEditTime: 2021-10-14 10:26:05
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \electron-vue\demo\src\components\FileTree.vue
@@ -43,7 +43,6 @@
 import { ElTree, ElIcon, ElButton, ElMessage} from "element-plus";
 import { Files, Folder } from "@element-plus/icons";
 import { inject, ref, toRaw, watch} from "vue";
-import zipTree from "../utils/zipTree";
 const fs = window.require("fs/promises");
 const { ipcRenderer } = window.require("electron");
 const path = window.require("path");
@@ -78,6 +77,14 @@ export default {
               isFile: dirent.isFile(),
             });
           }
+          // 排序
+          cData.sort((a, b)=>{
+            if(a.isFile-b.isFile){
+              return a.isFile-b.isFile
+            }else {
+              return a.name > b.name ? 1: -1
+            }
+          })
           return cData
         } catch (error) {
           ElMessage({message:'获取目录失败',type:'error'})
@@ -100,8 +107,7 @@ export default {
     const zip = () => {
       zipping.value = true;
       const fileList = toRaw(tree.value.getCheckedNodes());
-      zipTree(fileList, dirPath.value)
-        .then(() => {
+      ipcRenderer.invoke('zipTree',fileList,dirPath.value).then((res) => {
           ElMessage({ message: "打包成功！", type: "success" });
           zipping.value = false
           ipcRenderer.send('openDir',dirPath.value)

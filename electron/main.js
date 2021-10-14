@@ -2,7 +2,7 @@
 /*
  * @Author: your name
  * @Date: 2021-09-17 11:17:12
- * @LastEditTime: 2021-10-13 16:15:20
+ * @LastEditTime: 2021-10-14 13:42:31
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \electron-vue\demo\main.js
@@ -10,7 +10,7 @@
 const { app, ipcMain, webContents, BrowserWindow, Menu, dialog } = require('electron')
 const { exec } = require('child_process')
 const path = require('path')
-const zip = require('./utils/zip')
+const {zip,zipTree} = require('./utils/zip')
 const debounce = require('./utils/debounce')
 let winMap = new Map()
 let webcontentId = 1
@@ -26,17 +26,27 @@ function createWindow() {
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
+            nativeWindowOpen:false,
             preload: path.join(__dirname, 'preload.js')
         },
 
     })
+    
     if (process.env.NODE_ENV === 'dev') {
         newWin.loadURL('http://localhost:8080') //项目启动地址
     } else {
         newWin.loadFile(path.join(__dirname, '../index.html'))
     }
+    newWin.on('close',()=>{
+        winMap.forEach((value, key) => {
+            if (value.id === newWin.id) winMap.delete(key)
+        })
+    })
+    console.timeLog('a')
+
     newWin.once('ready-to-show', () => {
         newWin.show()
+        console.timeEnd('a')
     })
 
     watchSize(newWin)
@@ -82,6 +92,9 @@ function addMainListen() {
             currentWin.close()
         }
     })
+    ipcMain.handle('zipTree',(event, ...args)=>{
+        return zipTree(...args)
+    })
     // 右键菜单
     const contentMenu = Menu.buildFromTemplate([
         { role: 'copy', label: '复制' },
@@ -113,7 +126,8 @@ function addMainListen() {
 function getHandleArgv() {
     let zipFile = []
     const zipFunc = debounce(() => {
-        console.log(new Date())
+        console.timeLog('a')
+
         zip([...zipFile]).then(res=>{
             dialog.showMessageBox({
                 message:`打包成功,文件地址:${res}`,
@@ -121,8 +135,8 @@ function getHandleArgv() {
                 title: '提示',
             })
             .then(()=> {
-                exec(`explorer ${path.normalize(res) }`)
-
+                //exec(`explorer ${path.normalize(res) }`)
+                console.timeEnd('a')
                 if(!winMap.size) app.quit()
             })
         }).catch(err=>{
@@ -135,13 +149,19 @@ function getHandleArgv() {
         zipFile = []
     }, 3000)
     return (argv1) => {
+        console.time('a')
         let argv = [...argv1]
         if ((argv.length > 2 && argv[argv.length-2] === 'zip')) {
+            console.timeLog('a')
             // 直接压缩
             zipFile.push(argv.pop())
             zipFunc()
         } else {
-            let dirPath = path.resolve(argv.length > 2 ? path.resolve(argv.pop()) : '.')
+            console.log(argv)
+            console.timeLog('a')
+            let dirPath = path.resolve(argv.length > 2 ? path.resolve(argv.pop().split('"')[0]) : '.')
+            
+            console.log(argv, dirPath)
             if (winMap.has(dirPath)) {
                 let win = winMap.get(dirPath)
                 if (win) {
@@ -150,6 +170,7 @@ function getHandleArgv() {
                     win.focus()
                 }
             } else {
+                console.timeLog('a')
                 const newWin = createWindow()
                 winMap.set(dirPath, newWin)
             }
@@ -164,6 +185,7 @@ if (!getTheLock) {
     app.quit()
 } else {
     app.on('second-instance', (event, commandLine, workingDirectory) => {
+
         handleArgv(commandLine)
     })
     // app 的ready事件触发，创建窗口
@@ -178,4 +200,7 @@ if (!getTheLock) {
 }
 
 // 通过浏览器打开调试页面时的端口号
-app.commandLine.appendSwitch('remote-debugging-port', '8100');
+//app.commandLine.appendSwitch('remote-debugging-port', '8100');
+app.commandLine.appendSwitch('--disable-software-rasterizer');
+// 解决透明窗口打开闪烁问题
+app.commandLine.appendSwitch('wm-window-animations-disabled');

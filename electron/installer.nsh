@@ -1,5 +1,8 @@
 ;安装时写入
 !macro customInstall
+    DeleteRegKey HKCR "*\shell\treeZip"
+    DeleteRegKey HKCR "Directory\shell\treeZip"
+    DeleteRegKey HKCR "Directory\Background\shell\treeZip"
     WriteRegStr HKCR "*\shell\treeZip" "" "通过treeZip压缩"
     WriteRegStr HKCR "*\shell\treeZip" "Icon" "$INSTDIR\treeZip.exe"
     WriteRegStr HKCR "*\shell\treeZip\command" "" '"$INSTDIR\treeZip.exe" "zip" "%1"'
